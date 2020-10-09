@@ -1,0 +1,28 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "This simple CLI is used to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crowe828/employee-tracker.git"
+  },
+  "keywords": [
+    "sql",
+    "mysql",
+    "node"
+  ],
+  "author": "Christian Rowe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Crowe828/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/Crowe828/employee-tracker#readme",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
+}
