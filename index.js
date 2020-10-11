@@ -40,7 +40,6 @@ function loadPrompts() {
       ],
     })
     .then(function (answer) {
-      
       if (answer.choice === "VIEW_EMPLOYEES") {
         return viewEmployees();
       }
@@ -60,46 +59,67 @@ function loadPrompts() {
 }
 
 function viewEmployees() {
-  connection.query("SELECT * FROM employee", function (err, results) {
-    if (err) throw err;
-    inquirer.prompt({
-      type: "rawlist",
-      name: "employee",
-      message: "Which employee would you like to update?",
-      choices: function () {
-        let choiceArray = [];
-        for (let i = 0; i < results.length; i++) {
-          choiceArray.push(results[i].first_name + " " + results[i].last_name);
-        }
-        return choiceArray;
-      },
-    });
-  });
+  connection.query(
+    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
+    function (err, results) {
+      if (err) throw err;
+      inquirer
+        .prompt({
+          type: "rawlist",
+          name: "employee",
+          message: "Which employee would you like to update?",
+          choices: function () {
+            let choiceArray = [];
+            for (let i = 0; i < results.length; i++) {
+              choiceArray.push(
+                "NAME: " +
+                  results[i].first_name +
+                  " " +
+                  results[i].last_name +
+                  " ROLE: " +
+                  results[i].title
+              );
+            }
+            return choiceArray;
+          },
+        })
+        .then(function () {
+          viewRoles();
+        });
+    }
+  );
 }
+
 function viewRoles() {
-  connection.query("SELECT * FROM role", function (err, results) {
-    if (err) throw err;
-    inquirer.prompt({
-      type: "rawlist",
-      name: "role",
-      message: "Which role would you like to update?",
-      choices: function () {
-        let choiceArray = [];
-        for (let i = 0; i < results.length; i++) {
-          choiceArray.push(results[i].title);
-        }
-        return choiceArray;
-      },
-    });
-  });
+  connection.query(
+    "SELECT * FROM role INNER JOIN department ON role.department_id = department.id",
+    function (err, results) {
+      if (err) throw err;
+      inquirer.prompt({
+        type: "rawlist",
+        name: "role",
+        message: "What should their new role be?",
+        choices: function () {
+          let choiceArray = [];
+          for (let i = 0; i < results.length; i++) {
+            choiceArray.push(
+              "TITLE: " + results[i].title + " DEPARTMENT: " + results[i].name
+            );
+          }
+          return choiceArray;
+        },
+      });
+    }
+  );
 }
+
 function viewDepartments() {
   connection.query("SELECT * FROM department", function (err, results) {
     if (err) throw err;
     inquirer.prompt({
       type: "rawlist",
       name: "department",
-      message: "Which department would you like to update?",
+      message: "What is their new department?",
       choices: function () {
         let choiceArray = [];
         for (let i = 0; i < results.length; i++) {
@@ -110,5 +130,3 @@ function viewDepartments() {
     });
   });
 }
-
-// viewAllEmployees();
