@@ -28,16 +28,29 @@ function init() {
 }
 
 function loadPrompts() {
-  inquirer.prompt({
-    type: "list",
-    name: "choice",
-    message: "What would you like to do?",
-    choices: [
-      { name: "View All Employees", value: "VIEW_EMPLOYEES" },
-      { name: "View All Roles", value: "VIEW_ROLES" },
-      { name: "View All Departments", value: "VIEW_DEPARTMENTS" },
-    ],
-  });
+  inquirer
+    .prompt({
+      type: "list",
+      name: "choice",
+      message: "What would you like to do?",
+      choices: [
+        { name: "View All Employees", value: "VIEW_EMPLOYEES" },
+        { name: "View All Roles", value: "VIEW_ROLES" },
+        { name: "View All Departments", value: "VIEW_DEPARTMENTS" },
+      ],
+    })
+    .then(function (answer) {
+      
+      if (answer.choice === "VIEW_EMPLOYEES") {
+        return viewEmployees();
+      }
+      if (answer.choice === "VIEW_ROLES") {
+        return viewRoles();
+      }
+      if (answer.choice === "VIEW_DEPARTMENTS") {
+        return viewDepartments();
+      }
+    });
 
   // Switch Statement
   // switch (choice) {
@@ -46,8 +59,56 @@ function loadPrompts() {
   // }
 }
 
-// function viewEmployees() {
-//   connection.query("SELECT * FROM employee");
-// }
+function viewEmployees() {
+  connection.query("SELECT * FROM employee", function (err, results) {
+    if (err) throw err;
+    inquirer.prompt({
+      type: "rawlist",
+      name: "employee",
+      message: "Which employee would you like to update?",
+      choices: function () {
+        let choiceArray = [];
+        for (let i = 0; i < results.length; i++) {
+          choiceArray.push(results[i].first_name + " " + results[i].last_name);
+        }
+        return choiceArray;
+      },
+    });
+  });
+}
+function viewRoles() {
+  connection.query("SELECT * FROM role", function (err, results) {
+    if (err) throw err;
+    inquirer.prompt({
+      type: "rawlist",
+      name: "role",
+      message: "Which role would you like to update?",
+      choices: function () {
+        let choiceArray = [];
+        for (let i = 0; i < results.length; i++) {
+          choiceArray.push(results[i].title);
+        }
+        return choiceArray;
+      },
+    });
+  });
+}
+function viewDepartments() {
+  connection.query("SELECT * FROM department", function (err, results) {
+    if (err) throw err;
+    inquirer.prompt({
+      type: "rawlist",
+      name: "department",
+      message: "Which department would you like to update?",
+      choices: function () {
+        let choiceArray = [];
+        for (let i = 0; i < results.length; i++) {
+          choiceArray.push(results[i].name);
+        }
+        return choiceArray;
+      },
+    });
+  });
+}
 
 // viewAllEmployees();
