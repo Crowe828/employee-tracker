@@ -28,10 +28,6 @@ Developers are often tasked with creating interfaces that make it easy for non-d
   - **role_id** - INT to hold reference to role employee has
   - **manager_id** - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
 
-## Build a command-line application that at a minimum allows the user to:
-
-- Add departments, roles
-
 ## Bonus points if you're able to:
 
 - Update employee managers

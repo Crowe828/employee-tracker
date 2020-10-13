@@ -219,4 +219,30 @@ function addRoles() {
   );
 }
 
-// function addDepartments() {}
+function addDepartments() {
+  connection.query("SELECT * FROM department", function (err, results) {
+    console.table(results);
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "newDepartment",
+          message: "What is the name of the new department?",
+        },
+      ])
+      .then(function (answer) {
+        connection.query(
+          "INSERT INTO department SET ?",
+          {
+            name: answer.newDepartment,
+          },
+          function (err) {
+            if (err) throw err;
+            console.log("New department added!");
+            loadPrompts();
+          }
+        );
+      });
+  });
+}
