@@ -162,9 +162,61 @@ function addEmployees() {
             function (err) {
               if (err) throw err;
               console.log("New employee added!");
+              loadPrompts();
             }
           );
         });
     }
   );
 }
+
+function addRoles() {
+  connection.query(
+    "SELECT * FROM role INNER JOIN department ON role.department_id = department.id",
+    function (err, results) {
+      console.table(results);
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "newRoleTitle",
+            message: "What is the title of the new role?",
+          },
+          {
+            type: "input",
+            name: "newRoleSalary",
+            message: "How much does this new role pay?",
+          },
+          {
+            type: "input",
+            name: "newRoleDepartment",
+            message: "What department is this role in?",
+          },
+        ])
+        .then(function (answer) {
+          var newRole;
+          for (var i = 0; i < results.length; i++) {
+            if (results[i].name === answer.newRoleDepartment) {
+              newRole = results[i];
+            }
+          }
+          connection.query(
+            "INSERT INTO role SET ?",
+            {
+              title: answer.newRoleTitle,
+              salary: answer.newRoleSalary,
+              department_id: newRole.id,
+            },
+            function (err) {
+              if (err) throw err;
+              console.log("New role added!");
+              loadPrompts();
+            }
+          );
+        });
+    }
+  );
+}
+
+// function addDepartments() {}

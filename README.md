@@ -30,7 +30,7 @@ Developers are often tasked with creating interfaces that make it easy for non-d
 
 ## Build a command-line application that at a minimum allows the user to:
 
-- Add departments, roles, employees
+- Add departments, roles
 
 ## Bonus points if you're able to:
 
