@@ -32,8 +32,6 @@ Developers are often tasked with creating interfaces that make it easy for non-d
 
 - Add departments, roles, employees
 
-- Update employee roles
-
 ## Bonus points if you're able to:
 
 - Update employee managers

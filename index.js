@@ -35,15 +35,15 @@ function loadPrompts() {
       name: "choice",
       message: "What would you like to do?",
       choices: [
-        { name: "View All Employees", value: "VIEW_EMPLOYEES" },
+        { name: "Update an employee's role", value: "UPDATE_EMPLOYEES" },
         { name: "View All Roles", value: "VIEW_ROLES" },
         { name: "View All Departments", value: "VIEW_DEPARTMENTS" },
         { name: "Exit" },
       ],
     })
     .then(function (answer) {
-      if (answer.choice === "VIEW_EMPLOYEES") {
-        return viewEmployees();
+      if (answer.choice === "UPDATE_EMPLOYEES") {
+        return updateEmployees();
       }
       if (answer.choice === "VIEW_ROLES") {
         return viewRoles();
@@ -56,7 +56,7 @@ function loadPrompts() {
     });
 }
 
-function viewEmployees() {
+function updateEmployees() {
   connection.query(
     "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
     function (err, results) {
@@ -109,21 +109,3 @@ function viewEmployees() {
     }
   );
 }
-
-// function viewDepartments() {
-//   connection.query("SELECT * FROM department", function (err, results) {
-//     if (err) throw err;
-//     inquirer.prompt({
-//       type: "rawlist",
-//       name: "department",
-//       message: "What is their new department?",
-//       choices: function () {
-//         let choiceArray = [];
-//         for (let i = 0; i < results.length; i++) {
-//           choiceArray.push(results[i].name);
-//         }
-//         return choiceArray;
-//       },
-//     });
-//   });
-// }
