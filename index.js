@@ -2,6 +2,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const logo = require("asciiart-logo");
+const cTable = require("console.table");
 // const dbFunctions = require("./db/dbFunctions");
 
 var connection = mysql.createConnection({
@@ -37,6 +38,7 @@ function loadPrompts() {
         { name: "View All Employees", value: "VIEW_EMPLOYEES" },
         { name: "View All Roles", value: "VIEW_ROLES" },
         { name: "View All Departments", value: "VIEW_DEPARTMENTS" },
+        { name: "Exit" },
       ],
     })
     .then(function (answer) {
@@ -48,85 +50,80 @@ function loadPrompts() {
       }
       if (answer.choice === "VIEW_DEPARTMENTS") {
         return viewDepartments();
+      } else {
+        connection.end();
       }
     });
-
-  // Switch Statement
-  // switch (choice) {
-  //   case "VIEW_EMPLOYEES":
-  //     return viewEmployees();
-  // }
 }
 
 function viewEmployees() {
   connection.query(
     "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
     function (err, results) {
+      console.table(results);
       if (err) throw err;
       inquirer
-        .prompt({
-          type: "rawlist",
-          name: "employee",
-          message: "Which employee would you like to update?",
-          choices: function () {
-            let choiceArray = [];
-            for (let i = 0; i < results.length; i++) {
-              choiceArray.push(
-                "NAME: " +
-                  results[i].first_name +
-                  " " +
-                  results[i].last_name +
-                  " ROLE: " +
-                  results[i].title
-              );
-            }
-            return choiceArray;
+        .prompt([
+          {
+            type: "rawlist",
+            name: "employee",
+            message: "Which employee would you like to update?",
+            choices: function () {
+              let choiceArray = [];
+              for (let i = 0; i < results.length; i++) {
+                choiceArray.push(results[i].first_name);
+              }
+              return choiceArray;
+            },
           },
-        })
-        .then(function () {
-          viewRoles();
+          {
+            type: "input",
+            name: "role",
+            message: "What should their new role be?",
+          },
+        ])
+        .then(function (answer) {
+          var newRole;
+          for (var i = 0; i < results.length; i++) {
+            if (results[i].first_name === answer.employee) {
+              newRole = results[i];
+            }
+          }
+          connection.query(
+            "UPDATE role SET ? WHERE ?",
+            [
+              {
+                title: answer.role,
+              },
+              {
+                id: newRole.role_id,
+              },
+            ],
+            function (err) {
+              if (err) throw err;
+              console.log("Employee role successfully updated.");
+              loadPrompts();
+            }
+          );
         });
     }
   );
 }
 
-function viewRoles() {
-  connection.query(
-    "SELECT * FROM role INNER JOIN department ON role.department_id = department.id",
-    function (err, results) {
-      if (err) throw err;
-      inquirer.prompt({
-        type: "rawlist",
-        name: "role",
-        message: "What should their new role be?",
-        choices: function () {
-          let choiceArray = [];
-          for (let i = 0; i < results.length; i++) {
-            choiceArray.push(
-              "TITLE: " + results[i].title + " DEPARTMENT: " + results[i].name
-            );
-          }
-          return choiceArray;
-        },
-      });
-    }
-  );
-}
-
-function viewDepartments() {
-  connection.query("SELECT * FROM department", function (err, results) {
-    if (err) throw err;
-    inquirer.prompt({
-      type: "rawlist",
-      name: "department",
-      message: "What is their new department?",
-      choices: function () {
-        let choiceArray = [];
-        for (let i = 0; i < results.length; i++) {
-          choiceArray.push(results[i].name);
-        }
-        return choiceArray;
-      },
-    });
-  });
-}
+// function viewDepartments() {
+//   connection.query("SELECT * FROM department", function (err, results) {
+//     if (err) throw err;
+//     inquirer.prompt({
+//       type: "rawlist",
+//       name: "department",
+//       message: "What is their new department?",
+//       choices: function () {
+//         let choiceArray = [];
+//         for (let i = 0; i < results.length; i++) {
+//           choiceArray.push(results[i].name);
+//         }
+//         return choiceArray;
+//       },
+//     });
+//   });
+// }
