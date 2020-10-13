@@ -36,8 +36,9 @@ function loadPrompts() {
       message: "What would you like to do?",
       choices: [
         { name: "Update an employee's role", value: "UPDATE_EMPLOYEES" },
-        { name: "View All Roles", value: "VIEW_ROLES" },
-        { name: "View All Departments", value: "VIEW_DEPARTMENTS" },
+        { name: "Add an employee", value: "ADD_EMPLOYEES" },
+        { name: "Add a role", value: "ADD_ROLES" },
+        { name: "Add a department", value: "ADD_DEPARTMENTS" },
         { name: "Exit" },
       ],
     })
@@ -45,11 +46,14 @@ function loadPrompts() {
       if (answer.choice === "UPDATE_EMPLOYEES") {
         return updateEmployees();
       }
-      if (answer.choice === "VIEW_ROLES") {
-        return viewRoles();
+      if (answer.choice === "ADD_EMPLOYEES") {
+        return addEmployees();
       }
-      if (answer.choice === "VIEW_DEPARTMENTS") {
-        return viewDepartments();
+      if (answer.choice === "ADD_ROLES") {
+        return addRoles();
+      }
+      if (answer.choice === "ADD_DEPARTMENTS") {
+        return addDepartments();
       } else {
         connection.end();
       }
@@ -58,7 +62,7 @@ function loadPrompts() {
 
 function updateEmployees() {
   connection.query(
-    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
+    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id",
     function (err, results) {
       console.table(results);
       if (err) throw err;
@@ -103,6 +107,61 @@ function updateEmployees() {
               if (err) throw err;
               console.log("Employee role successfully updated.");
               loadPrompts();
+            }
+          );
+        });
+    }
+  );
+}
+
+function addEmployees() {
+  connection.query(
+    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id",
+    function (err, results) {
+      console.table(results);
+      if (err) throw err;
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "newEmployeeFN",
+            message: "What is their first name?",
+          },
+          {
+            type: "input",
+            name: "newEmployeeLN",
+            message: "What is their last name?",
+          },
+          {
+            type: "rawlist",
+            name: "newEmployeeRole",
+            message: "What is their title?",
+            choices: function () {
+              let choiceArray = [];
+              for (let i = 0; i < results.length; i++) {
+                choiceArray.push(results[i].title);
+              }
+              return choiceArray;
+            },
+          },
+        ])
+        .then(function (answer) {
+          var newRole;
+          for (var i = 0; i < results.length; i++) {
+            if (results[i].title === answer.newEmployeeRole) {
+              newRole = results[i];
+            }
+          }
+          connection.query(
+            "INSERT INTO employee SET ?",
+            {
+              first_name: answer.newEmployeeFN,
+              last_name: answer.newEmployeeLN,
+              role_id: newRole.role_id,
+            },
+            function (err) {
+              if (err) throw err;
+              console.log("New employee added!");
             }
           );
         });
