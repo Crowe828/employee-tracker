@@ -96,11 +96,27 @@ function updateEmployees() {
             type: "input",
             name: "employee",
             message: "Which employee would you like to update?",
+            validate: (answer) => {
+              for (var i = 0; i < results.length; i++) {
+                if (results[i].first_name === answer) {
+                  return true;
+                }
+                return "Please enter an employee's first name.";
+              }
+            },
           },
           {
             type: "input",
             name: "role",
             message: "What should their new role be?",
+            validate: (answer) => {
+              for (var i = 0; i < results.length; i++) {
+                if (results[i].title === answer) {
+                  return true;
+                }
+                return "Please enter an existing role.";
+              }
+            },
           },
         ])
         .then(function (answer) {
@@ -149,11 +165,23 @@ function addEmployees() {
             type: "input",
             name: "newEmployeeFN",
             message: "What is their first name?",
+            validate: (answer) => {
+              if (answer !== "") {
+                return true;
+              }
+              return "Please enter a first name.";
+            },
           },
           {
             type: "input",
             name: "newEmployeeLN",
             message: "What is their last name?",
+            validate: (answer) => {
+              if (answer !== "") {
+                return true;
+              }
+              return "Please enter a last name.";
+            },
           },
           {
             type: "rawlist",
@@ -211,16 +239,36 @@ function addRoles() {
             type: "input",
             name: "newRoleTitle",
             message: "What is the title of the new role?",
+            validate: (answer) => {
+              if (answer !== "") {
+                return true;
+              }
+              return "Please enter a title.";
+            },
           },
           {
             type: "input",
             name: "newRoleSalary",
             message: "How much does this new role pay?",
+            validate: (answer) => {
+              if (answer !== "") {
+                return true;
+              }
+              return "Please enter a salary.";
+            },
           },
           {
             type: "input",
             name: "newRoleDepartment",
             message: "What department is this role in?",
+            validate: (answer) => {
+              for (var i = 0; i < results.length; i++) {
+                if (results[i].name === answer) {
+                  return true;
+                }
+                return "Please enter an existing department.";
+              }
+            },
           },
         ])
         .then(function (answer) {
@@ -263,6 +311,12 @@ function addDepartments() {
           type: "input",
           name: "newDepartment",
           message: "What is the name of the new department?",
+          validate: (answer) => {
+            if (answer !== "") {
+              return true;
+            }
+            return "Please enter a department name.";
+          },
         },
       ])
       .then(function (answer) {
