@@ -62,23 +62,16 @@ function loadPrompts() {
 
 function updateEmployees() {
   connection.query(
-    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id",
+    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
     function (err, results) {
       console.table(results);
       if (err) throw err;
       inquirer
         .prompt([
           {
-            type: "rawlist",
+            type: "input",
             name: "employee",
             message: "Which employee would you like to update?",
-            choices: function () {
-              let choiceArray = [];
-              for (let i = 0; i < results.length; i++) {
-                choiceArray.push(results[i].first_name);
-              }
-              return choiceArray;
-            },
           },
           {
             type: "input",
@@ -246,3 +239,17 @@ function addDepartments() {
       });
   });
 }
+
+// BONUS:
+// Update employee managers
+
+// View employees by manager
+
+// Delete departments, roles, and employees
+
+// View the total utilized budget of a department
+// ie the combined salaries of all employees in that department
+
+// You may wish to have a separate file containing functions for performing
+// specific SQL queries you'll need to use. Could a constructor function or
+// a class be helpful for organizing these?

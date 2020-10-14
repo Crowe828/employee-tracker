@@ -1,43 +1,55 @@
 # Employee Tracker
 
+[![made-with-Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)](http://commonmark.org)
+[![license-badge](https://img.shields.io/badge/License-MIT-red.svg)](https://shields.io/)
+
 ## Description
 
-Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as Content Management Systems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
+Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as Content Management Systems. This application is a CLI which can store your company's employee database.
 
-## Instructions
+## Table of Contents
 
-![Database Schema](Assets/schema.png)
+- [Images](#images)
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
+- [Contributing](#contributing)
+- [Tests](#tests)
+- [Questions](#tests)
 
-- **department**:
+## Images
 
-  - **id** - INT PRIMARY KEY
-  - **name** - VARCHAR(30) to hold department name
+## Installation
 
-- **role**:
+```
+git pull https://github.com/Crowe828/employee-tracker.git
+```
 
-  - **id** - INT PRIMARY KEY
-  - **title** - VARCHAR(30) to hold role title
-  - **salary** - DECIMAL to hold role salary
-  - **department_id** - INT to hold reference to department role belongs to
+## Usage
 
-- **employee**:
+Simply select a task you would like to complete and enter in all of the required information. Via this application, you can Update employee's roles, add new employees, roles, and even departments.
 
-  - **id** - INT PRIMARY KEY
-  - **first_name** - VARCHAR(30) to hold employee first name
-  - **last_name** - VARCHAR(30) to hold employee last name
-  - **role_id** - INT to hold reference to role employee has
-  - **manager_id** - INT to hold reference to another employee that manages the employee being Created. This field may be null if the employee has no manager
+## License
 
-## Bonus points if you're able to:
+This project is covered under the MIT License.
 
-- Update employee managers
+## Contributing
 
-- View employees by manager
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Please make sure to update tests as appropriate.
 
-- Delete departments, roles, and employees
+## Tests
 
-- View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+```
+console.log(test);
 
-- You may wish to have a separate file containing functions for performing specific SQL queries you'll need to use. Could a constructor function or a class be helpful for organizing these?
+The console will display the word 'test'
+```
 
-![Employee Tracker](Assets/employee-tracker.gif)
+## Questions
+
+If you would like to learn more, feel free to check out my GitHub or send me an email anytime.
+
+- [GitHub](https://github.com/crowe828)
+- [Repo](https://github.com/Crowe828/employee-tracker)
+- [Email Me](mailto:crowe828@gmail.com?subject=Nice%20README%20Generator%20Dude)
