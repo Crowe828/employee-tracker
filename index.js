@@ -20,14 +20,15 @@ connection.connect(function (err) {
   init();
 });
 
-// Function init()
+// First thing that appears is a large logo
 function init() {
-  const logoText = logo({ name: "Employee Manager" }).render();
+  const logoText = logo({ name: "Employee Tracker" }).render();
   console.log(logoText);
   // Load our Prmpts
   loadPrompts();
 }
 
+// Main questions page
 function loadPrompts() {
   inquirer
     .prompt({
@@ -35,6 +36,7 @@ function loadPrompts() {
       name: "choice",
       message: "What would you like to do?",
       choices: [
+        { name: "View all data", value: "VIEW_ALL" },
         { name: "Update an employee's role", value: "UPDATE_EMPLOYEES" },
         { name: "Add an employee", value: "ADD_EMPLOYEES" },
         { name: "Add a role", value: "ADD_ROLES" },
@@ -42,7 +44,11 @@ function loadPrompts() {
         { name: "Exit" },
       ],
     })
+    // Depending on their answer, call the corresponding function
     .then(function (answer) {
+      if (answer.choice === "VIEW_ALL") {
+        return viewAll();
+      }
       if (answer.choice === "UPDATE_EMPLOYEES") {
         return updateEmployees();
       }
@@ -60,10 +66,28 @@ function loadPrompts() {
     });
 }
 
+// Displays all of the data in the database
+function viewAll() {
+  // Joining all of the tables by their id
+  connection.query(
+    "SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id",
+    function (err, results) {
+      // Display the data in a table
+      console.table(results);
+      if (err) throw err;
+      // Return to the main prompt
+      loadPrompts();
+    }
+  );
+}
+
+// Update an existing employee
 function updateEmployees() {
+  // Inner join employee and role tables by their id
   connection.query(
     "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
     function (err, results) {
+      // Display the data in a table
       console.table(results);
       if (err) throw err;
       inquirer
@@ -80,12 +104,14 @@ function updateEmployees() {
           },
         ])
         .then(function (answer) {
+          // If the name entered isn't in the database, it cannot be updated.
           var newRole;
           for (var i = 0; i < results.length; i++) {
             if (results[i].first_name === answer.employee) {
               newRole = results[i];
             }
           }
+          // Update the selected employee's info
           connection.query(
             "UPDATE role SET ? WHERE ?",
             [
@@ -98,6 +124,7 @@ function updateEmployees() {
             ],
             function (err) {
               if (err) throw err;
+              // Let the user know it worked and send them back to the main prompt
               console.log("Employee role successfully updated.");
               loadPrompts();
             }
@@ -107,10 +134,13 @@ function updateEmployees() {
   );
 }
 
+// Add a new employee
 function addEmployees() {
+  // Inner join all of the data from the three tables
   connection.query(
     "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id",
     function (err, results) {
+      // Display the data in a table
       console.table(results);
       if (err) throw err;
       inquirer
@@ -129,6 +159,7 @@ function addEmployees() {
             type: "rawlist",
             name: "newEmployeeRole",
             message: "What is their title?",
+            // Must choose an existing title
             choices: function () {
               let choiceArray = [];
               for (let i = 0; i < results.length; i++) {
@@ -145,6 +176,7 @@ function addEmployees() {
               newRole = results[i];
             }
           }
+          // Insert the new employee into the employee table
           connection.query(
             "INSERT INTO employee SET ?",
             {
@@ -154,6 +186,7 @@ function addEmployees() {
             },
             function (err) {
               if (err) throw err;
+              // Let the user know it worked and send them back to the main prompt
               console.log("New employee added!");
               loadPrompts();
             }
@@ -163,10 +196,13 @@ function addEmployees() {
   );
 }
 
+// Add a new role
 function addRoles() {
+  // Inner join role and department tables
   connection.query(
     "SELECT * FROM role INNER JOIN department ON role.department_id = department.id",
     function (err, results) {
+      // Display the data in a table
       console.table(results);
       if (err) throw err;
       inquirer
@@ -195,6 +231,7 @@ function addRoles() {
             }
           }
           connection.query(
+            // Insert the new role into the role table
             "INSERT INTO role SET ?",
             {
               title: answer.newRoleTitle,
@@ -203,6 +240,7 @@ function addRoles() {
             },
             function (err) {
               if (err) throw err;
+              // Let the user know it worked and send them back to the main prompt
               console.log("New role added!");
               loadPrompts();
             }
@@ -212,8 +250,11 @@ function addRoles() {
   );
 }
 
+// Add a new department
 function addDepartments() {
+  // Only the table of departments needs to be shown
   connection.query("SELECT * FROM department", function (err, results) {
+    // Display the data in a table
     console.table(results);
     if (err) throw err;
     inquirer
@@ -225,6 +266,7 @@ function addDepartments() {
         },
       ])
       .then(function (answer) {
+        // Insert the new department into the department table
         connection.query(
           "INSERT INTO department SET ?",
           {
@@ -232,6 +274,7 @@ function addDepartments() {
           },
           function (err) {
             if (err) throw err;
+            // Let the user know it worked and send them back to the main prompt
             console.log("New department added!");
             loadPrompts();
           }
