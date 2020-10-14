@@ -2,7 +2,7 @@
   "name": "employee-tracker",
   "version": "1.0.0",
   "description": "This simple CLI is used to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "test"
   },

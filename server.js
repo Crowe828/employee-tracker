@@ -1,24 +1,10 @@
-// Require Statements
+// Dependencies
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const logo = require("asciiart-logo");
 const cTable = require("console.table");
 // const dbFunctions = require("./db/dbFunctions");
-
-var connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "Xgeuaot1!",
-  database: "employees",
-});
-
-// connect to the mysql server and sql database
-connection.connect(function (err) {
-  if (err) throw err;
-  // run the start function after the connection is made to prompt the user
-  init();
-});
+const connection = require("./db/connection"); 
 
 // First thing that appears is a large logo
 function init() {
@@ -336,6 +322,10 @@ function addDepartments() {
       });
   });
 }
+
+// Run the start function after the connection is made to prompt the user
+init();
+
 
 // BONUS:
 // Update employee managers
