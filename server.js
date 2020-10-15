@@ -1,10 +1,9 @@
 // Dependencies
-const inquirer = require("inquirer");
 const mysql = require("mysql");
+const inquirer = require("inquirer");
 const logo = require("asciiart-logo");
 const cTable = require("console.table");
-// const dbFunctions = require("./db/dbFunctions");
-const connection = require("./db/connection"); 
+const connection = require("./db/config/connection");
 
 // First thing that appears is a large logo
 function init() {
@@ -30,6 +29,14 @@ function loadPrompts() {
         { name: "Exit" },
       ],
     })
+    // .switch (answer) {
+    //   case value:
+
+    //     break;
+
+    //   default:
+    //     break;
+    // }
     // Depending on their answer, call the corresponding function
     .then(function (answer) {
       if (answer.choice === "VIEW_ALL") {
@@ -71,7 +78,7 @@ function viewAll() {
 function updateEmployees() {
   // Inner join employee and role tables by their id
   connection.query(
-    "SELECT * FROM employee INNER JOIN role ON employee.role_id = role.id",
+    "SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id",
     function (err, results) {
       // Display the data in a table
       console.table(results);
@@ -82,46 +89,46 @@ function updateEmployees() {
             type: "input",
             name: "employee",
             message: "Which employee would you like to update?",
-            validate: (answer) => {
-              for (var i = 0; i < results.length; i++) {
-                if (results[i].first_name === answer) {
-                  return true;
-                }
-                return "Please enter an employee's first name.";
-              }
-            },
+            // validate: (answer) => {
+            //   for (var i = 0; i < results.length; i++) {
+            //     if (results[i].first_name === answer) {
+            //       return true;
+            //     }
+            //     return "Please enter an employee's first name.";
+            //   }
+            // },
           },
           {
             type: "input",
             name: "role",
             message: "What should their new role be?",
-            validate: (answer) => {
-              for (var i = 0; i < results.length; i++) {
-                if (results[i].title === answer) {
-                  return true;
-                }
-                return "Please enter an existing role.";
-              }
-            },
+            // validate: (answer) => {
+            //   for (var i = 0; i < results.length; i++) {
+            //     if (results[i].title === answer) {
+            //       return true;
+            //     }
+            //     return "Please enter an existing role.";
+            //   }
+            // },
           },
         ])
         .then(function (answer) {
           // If the name entered isn't in the database, it cannot be updated.
           var newRole;
           for (var i = 0; i < results.length; i++) {
-            if (results[i].first_name === answer.employee) {
+            if (results[i].title === answer.role) {
               newRole = results[i];
             }
           }
           // Update the selected employee's info
           connection.query(
-            "UPDATE role SET ? WHERE ?",
+            "UPDATE employee SET ? WHERE ?",
             [
               {
-                title: answer.role,
+                role_id: newRole.role_id,
               },
               {
-                id: newRole.role_id,
+                first_name: answer.employee,
               },
             ],
             function (err) {
@@ -325,7 +332,6 @@ function addDepartments() {
 
 // Run the start function after the connection is made to prompt the user
 init();
-
 
 // BONUS:
 // Update employee managers
