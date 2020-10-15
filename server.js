@@ -332,17 +332,3 @@ function addDepartments() {
 
 // Run the start function after the connection is made to prompt the user
 init();
-
-// BONUS:
-// Update employee managers
-
-// View employees by manager
-
-// Delete departments, roles, and employees
-
-// View the total utilized budget of a department
-// ie the combined salaries of all employees in that department
-
-// You may wish to have a separate file containing functions for performing
-// specific SQL queries you'll need to use. Could a constructor function or
-// a class be helpful for organizing these?
