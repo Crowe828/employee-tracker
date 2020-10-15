@@ -20,7 +20,11 @@ Developers are often tasked with creating interfaces that make it easy for non-d
 ## Images
 
 - Main display:
-  ![Employee Tracker](https://github.com/Crowe828/employee-tracker/blob/main/public/assets/images/employee-tracker.png)
+  ![Employee Tracker](https://github.com/Crowe828/employee-tracker/blob/main/assets/images/employee-tracker.png)
+
+- Functionality:
+
+  ![Employee Tracker GIF](https://github.com/Crowe828/employee-tracker/blob/main/assets/images/employee-tracker.gif)
 
 ## Installation
 
