@@ -29,15 +29,6 @@ function loadPrompts() {
         { name: "Exit" },
       ],
     })
-    // .switch (answer) {
-    //   case value:
-
-    //     break;
-
-    //   default:
-    //     break;
-    // }
-    // Depending on their answer, call the corresponding function
     .then(function (answer) {
       if (answer.choice === "VIEW_ALL") {
         return viewAll();
